@@ -1,11 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Box } from "@material-ui/core";
 import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
   const { messages, otherUser, userId } = props;
+  console.log({ messages });
   return (
     <Box>
       {messages.map((message) => {
@@ -26,14 +26,4 @@ const Messages = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const convoUser = state.activeConversation;
-  const { messages, otherUser } = state.conversations.find(
-    (m) => m.otherUser.username === convoUser
-  );
-  const displayMessages = [...messages].reverse();
-  const userId = state.user.id;
-  return { messages: displayMessages, userId, otherUser };
-};
-
-export default connect(mapStateToProps)(Messages);
+export default Messages;
