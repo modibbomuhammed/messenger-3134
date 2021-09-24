@@ -88,7 +88,6 @@ async function seed() {
   });
 
   const otherUsers = await Promise.all([
-    ,
     User.create({
       username: "ashanti",
       email: "ashanti@email.com",
