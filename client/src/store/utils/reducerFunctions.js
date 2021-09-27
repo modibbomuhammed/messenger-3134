@@ -14,7 +14,6 @@ export const addMessageToStore = (state, payload) => {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
-      // messages: [message],
       messages: [newMessage],
     };
     newConvo.latestMessageText = message.text;
