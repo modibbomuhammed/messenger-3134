@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  clearUnread,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -106,6 +107,23 @@ export const postMessage = (body) => async (dispatch) => {
     sendMessage(data, body);
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const checkMessageStatus = (
+  otherUser,
+  conversationId,
+  unreadMessagesCount
+) => async (dispatch) => {
+  try {
+    await axios.put("/api/messages", {
+      otherUser,
+      conversationId,
+      unreadMessagesCount,
+    });
+    if (conversationId) dispatch(clearUnread(conversationId));
+  } catch (err) {
+    console.error(err);
   }
 };
 

@@ -6,7 +6,6 @@ import {
   addMessageToStore,
   clearUnreadMessages,
 } from "./utils/reducerFunctions";
-import store from "./index";
 
 // ACTIONS
 
@@ -19,7 +18,6 @@ const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const CLEAR_UNREAD_MESSAGES = "CLEAR_UNREAD_MESSAGES";
 
-
 // ACTION CREATORS
 
 export const gotConversations = (conversations) => {
@@ -30,10 +28,9 @@ export const gotConversations = (conversations) => {
 };
 
 export const setNewMessage = (message, sender) => {
-  const ChattingWithUsername = store.getState().activeConversation;
   return {
     type: SET_MESSAGE,
-    payload: { message, ChattingWithUsername, sender: sender || null },
+    payload: { message, sender: sender || null },
   };
 };
 
@@ -64,10 +61,10 @@ export const clearSearchedUsers = () => {
   };
 };
 
-export const clearUnread = (username) => {
+export const clearUnread = (convoId) => {
   return {
     type: CLEAR_UNREAD_MESSAGES,
-    payload: username,
+    convoId,
   };
 };
 
@@ -104,7 +101,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case CLEAR_UNREAD_MESSAGES:
-      return clearUnreadMessages(state, action.payload);
+      return clearUnreadMessages(state, action.convoId);
     default:
       return state;
   }
