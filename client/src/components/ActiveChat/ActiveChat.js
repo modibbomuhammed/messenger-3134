@@ -25,6 +25,15 @@ const ActiveChat = (props) => {
   const { user } = props;
   const conversation = props.conversation || {};
 
+  let lastOtherUserMessage;
+  if (Object.keys(conversation).length) {
+    lastOtherUserMessage = conversation.messages.filter(
+      (m) => m.senderId === user.id
+    );
+    lastOtherUserMessage.sort((a, b) => b.id - a.id);
+    lastOtherUserMessage = lastOtherUserMessage[0];
+  }
+
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -38,6 +47,7 @@ const ActiveChat = (props) => {
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
+              lastOtherUserMessage={lastOtherUserMessage}
             />
             <Input
               otherUser={conversation.otherUser}
@@ -63,4 +73,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(ActiveChat);
+export default connect(mapStateToProps)(ActiveChat);
