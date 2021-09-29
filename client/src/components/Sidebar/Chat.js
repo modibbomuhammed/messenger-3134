@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
 const Chat = (props) => {
   const classes = useStyles();
   const { conversation } = props;
-  const { otherUser, unreadMessagesCount } = conversation;
+  const { otherUser, unreadMessageCount } = conversation;
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
     await props.checkMessageStatus(
       otherUser.username,
       conversation.id,
-      unreadMessagesCount
+      unreadMessageCount
     );
     await props.fetchNewConvo();
   };
@@ -56,8 +56,10 @@ const mapDispatchToProps = (dispatch) => {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
     },
-    checkMessageStatus: (otherUser, conversationId) => {
-      dispatch(checkMessageStatus(otherUser, conversationId));
+    checkMessageStatus: (otherUser, conversationId, unreadMessageCount) => {
+      dispatch(
+        checkMessageStatus(otherUser, conversationId, unreadMessageCount)
+      );
     },
     fetchNewConvo: () => {
       dispatch(fetchConversations());

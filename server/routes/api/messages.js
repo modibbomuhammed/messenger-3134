@@ -14,13 +14,14 @@ router.post("/", async (req, res, next) => {
     const activeConversation = foundUser ? foundUser.activeConversation : "";
 
     const messageStatus = activeConversation === req.user.username;
+
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
       const message = await Message.create({
         senderId,
         text,
         conversationId,
-        unread: messageStatus ? false : true,
+        unread: !messageStatus,
       });
 
       return res.json({ message, sender });
@@ -45,15 +46,16 @@ router.post("/", async (req, res, next) => {
       senderId,
       text,
       conversationId: conversation.id,
-      unread: messageStatus ? false : true,
+      unread: !messageStatus,
     });
+
     res.json({ message, sender });
   } catch (error) {
     next(error);
   }
 });
 
-router.put("/", async (req, res, next) => {
+router.put("/read", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -62,34 +64,24 @@ router.put("/", async (req, res, next) => {
     const { otherUser, conversationId, unreadMessagesCount } = req.body;
     const activeChat = onlineUsers.find((val) => val.id === req.user.id);
     activeChat
-      ? (activeChat.activeConversation = otherUser.username)
+      ? (activeChat.activeConversation = otherUser)
       : onlineUsers.push({
           id: req.user.id,
-          activeConversation: otherUser.username,
+          activeConversation: otherUser,
         });
 
-    if (!conversationId || unreadMessagesCount === 0) return res.json({});
+    if (!conversationId || unreadMessagesCount === 0) {
+      return res.sendStatus(204);
+    }
 
-    const conversations = await Conversation.findOne({
-      where: { id: conversationId },
-      attributes: ["id"],
-      order: [[Message, "createdAt", "DESC"]],
-      include: [{ model: Message, order: ["createdAt", "DESC"] }],
+    const unreadMessages = await Message.findAll({
+      where: { conversationId, unread: true },
     });
+    const { senderId } = unreadMessages[0].dataValues;
+    if (req.user.id !== senderId)
+      await Message.update({ unread: false }, { where: { conversationId } });
 
-    const convoJSON = conversations.toJSON();
-    let messagePromises = [];
-
-    convoJSON.messages.forEach((values) => {
-      if (values.unread) {
-        messagePromises.push(
-          Message.update({ unread: false }, { where: { id: values.id } })
-        );
-      }
-    });
-    await Promise.all(messagePromises);
-
-    res.json({});
+    res.sendStatus(204);
   } catch (err) {
     next(err);
   }

@@ -116,7 +116,7 @@ export const checkMessageStatus = (
   unreadMessagesCount
 ) => async (dispatch) => {
   try {
-    await axios.put("/api/messages", {
+    await axios.put("/api/messages/read", {
       otherUser,
       conversationId,
       unreadMessagesCount,

@@ -47,10 +47,7 @@ const Sidebar = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    conversations: state.conversations.map((values) => ({
-      ...values,
-      unreadMessagesCount: values.messages.filter((val) => val.unread).length,
-    })),
+    conversations: state.conversations,
   };
 };
 

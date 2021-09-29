@@ -15,14 +15,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     letterSpacing: -0.2,
   },
-  // previewText: {
-  //   fontSize: 12,
-  //   color: "#9CADC8",
-  //   letterSpacing: -0.17,
-  // },
   previewText: (prop) => ({
     fontSize: 12,
-    // color: prop.weight ? "#000000" : "#9CADC8",
+    color: prop.weight ? "#000000" : "#9CADC8",
     letterSpacing: -0.17,
     fontWeight: prop.weight ? 700 : 100,
   }),
@@ -33,32 +28,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ChatContent = (props) => {
-  const { conversation, activeConvo } = props;
-  const { latestMessageText, otherUser, unreadMessagesCount } = conversation;
+  const { conversation, userId } = props;
+  const { latestMessageText, otherUser, unreadMessageCount } = conversation;
 
-  const prop = { weight: conversation.unreadMessagesCount };
+  const prop = { weight: conversation.unreadMessageCount };
 
   const classes = useStyles(prop);
+  let display = true;
 
-  const display = activeConvo === otherUser.username;
+  if (unreadMessageCount) {
+    const { senderId } = conversation.messages.filter((val) => val.unread)[0];
+    display = senderId === userId;
+  }
+
   return (
     <Box className={classes.root}>
       <Box>
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography
-          className={classes.previewText}
-          style={{ color: unreadMessagesCount ? "#000000" : "#9CADC8" }}
-        >
+        <Typography className={classes.previewText}>
           {latestMessageText}
         </Typography>
       </Box>
 
-      {!display && unreadMessagesCount > 0 ? (
+      {!display && unreadMessageCount > 0 ? (
         <Box>
           <Badge
-            badgeContent={unreadMessagesCount}
+            badgeContent={unreadMessageCount}
             className={classes.messages}
             color="primary"
           ></Badge>
@@ -69,7 +66,7 @@ const ChatContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return { activeConvo: state.activeConversation };
+  return { userId: state.user.id };
 };
 
 export default connect(mapStateToProps)(ChatContent);

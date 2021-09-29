@@ -27,15 +27,7 @@ const Messages = (props) => {
           const time = moment(message.createdAt).format("h:mm");
 
           return message.senderId === userId ? (
-            <SenderBubble key={message.id} text={message.text} time={time} />
-          ) : (
-            // <Box>
-            <OtherUserBubble
-              key={message.id}
-              text={message.text}
-              time={time}
-              otherUser={otherUser}
-            >
+            <SenderBubble key={message.id} text={message.text} time={time}>
               {message.id === lastOtherUserMessage.id && (
                 <Avatar
                   alt={otherUser.username}
@@ -43,8 +35,14 @@ const Messages = (props) => {
                   className={classes.avatar}
                 />
               )}
-            </OtherUserBubble>
-            // </Box>
+            </SenderBubble>
+          ) : (
+            <OtherUserBubble
+              key={message.id}
+              text={message.text}
+              time={time}
+              otherUser={otherUser}
+            />
           );
         })}
     </Box>

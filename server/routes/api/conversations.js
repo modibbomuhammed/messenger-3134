@@ -51,6 +51,10 @@ router.get("/", async (req, res, next) => {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
 
+      const unreadMessagesCount = await Message.count({
+        where: { conversationId: convoJSON.id, unread: true },
+      });
+
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
         convoJSON.otherUser = convoJSON.user1;
@@ -69,6 +73,7 @@ router.get("/", async (req, res, next) => {
 
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
+      convoJSON.unreadMessageCount = unreadMessagesCount;
       conversations[i] = convoJSON;
     }
 

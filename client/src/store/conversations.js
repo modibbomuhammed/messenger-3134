@@ -6,6 +6,7 @@ import {
   addMessageToStore,
   clearUnreadMessages,
 } from "./utils/reducerFunctions";
+import store from "./index";
 
 // ACTIONS
 
@@ -28,9 +29,10 @@ export const gotConversations = (conversations) => {
 };
 
 export const setNewMessage = (message, sender) => {
+  const currentlyChattingWith = store.getState().activeConversation;
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: { message, currentlyChattingWith, sender: sender || null },
   };
 };
 

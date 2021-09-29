@@ -28,7 +28,7 @@ const ActiveChat = (props) => {
   let lastOtherUserMessage;
   if (Object.keys(conversation).length) {
     lastOtherUserMessage = conversation.messages.filter(
-      (m) => m.senderId === conversation.otherUser.id
+      (m) => m.senderId === user.id
     );
     lastOtherUserMessage.sort((a, b) => b.id - a.id);
     lastOtherUserMessage = lastOtherUserMessage[0];
