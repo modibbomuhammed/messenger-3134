@@ -75,11 +75,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     if (convo.otherUser.id === recipientId) {
       const convoCopy = { ...convo };
       convoCopy.id = message.conversationId;
-      convoCopy.messages = [
-        ...convoCopy.messages,
-        // { ...message, unread: true },
-        message,
-      ];
+      convoCopy.messages = [...convoCopy.messages, message];
       convoCopy.latestMessageText = message.text;
       return convoCopy;
     } else {
@@ -91,10 +87,13 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 export const clearUnreadMessages = (state, convoId) => {
   return state.map((conversation) => {
     if (conversation.id === convoId) {
-      conversation.messages = conversation.messages.map((values) => ({
+      const copyConvo = { ...conversation };
+      copyConvo.messages = copyConvo.messages.map((values) => ({
         ...values,
         unread: false,
       }));
+      copyConvo.unreadMessageCount = 0;
+      return copyConvo;
     }
     return conversation;
   });
