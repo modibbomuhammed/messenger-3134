@@ -13,7 +13,6 @@ const Message = db.define("message", {
   unread: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: false,
   },
 });
 
