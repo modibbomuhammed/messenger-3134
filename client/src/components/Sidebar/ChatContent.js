@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Badge from "@material-ui/core/Badge";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,18 +15,31 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     letterSpacing: -0.2,
   },
-  previewText: {
+  previewText: (prop) => ({
     fontSize: 12,
-    color: "#9CADC8",
+    color: prop.weight ? "#000000" : "#9CADC8",
     letterSpacing: -0.17,
+    fontWeight: prop.weight ? 700 : 100,
+  }),
+  messages: {
+    right: "30px",
+    top: "10px",
   },
 }));
 
 const ChatContent = (props) => {
-  const classes = useStyles();
+  const { conversation, userId } = props;
+  const { latestMessageText, otherUser, unreadMessageCount } = conversation;
 
-  const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const prop = { weight: conversation.unreadMessageCount };
+
+  const classes = useStyles(prop);
+  let display = true;
+
+  if (unreadMessageCount) {
+    const { senderId } = conversation.messages.filter((val) => val.unread)[0];
+    display = senderId === userId;
+  }
 
   return (
     <Box className={classes.root}>
@@ -36,8 +51,22 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
+
+      {!display && unreadMessageCount > 0 ? (
+        <Box>
+          <Badge
+            badgeContent={unreadMessageCount}
+            className={classes.messages}
+            color="primary"
+          ></Badge>
+        </Box>
+      ) : null}
     </Box>
   );
 };
 
-export default ChatContent;
+const mapStateToProps = (state) => {
+  return { userId: state.user.id };
+};
+
+export default connect(mapStateToProps)(ChatContent);

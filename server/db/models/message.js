@@ -1,13 +1,17 @@
-const Sequelize = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const db = require("../db");
 
 const Message = db.define("message", {
   text: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   senderId: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  unread: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   },
 });

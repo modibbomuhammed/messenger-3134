@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { User } = require("../../db/models");
 const jwt = require("jsonwebtoken");
+const { onlineUsers } = require("../../onlineUsers");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -80,6 +81,12 @@ router.delete("/logout", (req, res, next) => {
 
 router.get("/user", (req, res, next) => {
   if (req.user) {
+    const foundUser = onlineUsers.find((val) => val.id === req.user.id);
+    if (!foundUser) {
+      onlineUsers.push({ id: req.user.id, activeConversation: "" });
+    } else {
+      foundUser.activeConversation = "";
+    }
     return res.json(req.user);
   } else {
     return res.json({});
