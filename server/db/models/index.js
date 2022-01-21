@@ -2,6 +2,7 @@ const Conversation = require("./conversation");
 const User = require("./user");
 const Message = require("./message");
 const Chatroom = require("./chatroom");
+const UserChatroom = require("./userChatroom");
 // associations
 
 User.hasMany(Conversation);
@@ -14,9 +15,11 @@ Conversation.hasMany(Message);
 Chatroom.belongsToMany(User, { through: "user_chatroom" });
 User.belongsToMany(Chatroom, { through: "user_chatroom" });
 
+
 module.exports = {
   User,
   Conversation,
   Message,
   Chatroom,
+  UserChatroom,
 };

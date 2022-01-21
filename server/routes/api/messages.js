@@ -87,4 +87,21 @@ router.put("/read", async (req, res, next) => {
   }
 });
 
+router.post("/chatMessage", async (req, res, next) => {
+  try {
+    const { text, chatRoomId } = req.body;
+    const message = await Message.create({
+      text,
+      senderId: req.user.id,
+      unread: false,
+      chatroomId: chatRoomId,
+    });
+    res.json(message.toJSON());
+  } catch (error) {
+    console.log({ error });
+    console.error(error);
+    res.sendStatus(400);
+  }
+});
+
 module.exports = router;

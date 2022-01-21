@@ -1,11 +1,21 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, sequelize } = require("sequelize");
 const db = require("../db");
 
-const UserChatroom = sequelize.define("user_chatroom", {
-  owner: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+const UserChatroom = db.define(
+  "user_chatroom",
+  {
+    owner: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+
+    lastestActive: {
+      type: DataTypes.DATE,
+    },
   },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = UserChatroom;

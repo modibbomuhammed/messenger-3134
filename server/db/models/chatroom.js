@@ -6,6 +6,16 @@ const Chatroom = db.define("chatroom", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  chatUsers: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    get() {
+      return this.getDataValue("chatUsers").split(",");
+    },
+    set(val) {
+      this.setDataValue("chatUsers", val.join(","));
+    },
+  },
 });
 
 module.exports = Chatroom;
